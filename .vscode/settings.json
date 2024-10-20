@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/2e34dee4-09c0-456a-ae08-e7bd99fe8fe6/resourceGroups/appsvc_linux_centralus_basic/providers/Microsoft.Web/sites/qrdb",
+    "appService.deploySubpath": "."
+}
