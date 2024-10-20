@@ -5,3 +5,12 @@ runConfig:
   concurrency: 50
   cpu: 1
   memoryMiB: 512
+# Environment variables and secrets
+env:
+  - variable: CLERK_SECRET_KEY
+    secret: projects/681624062565/secrets/CLERK_SECRET_KEY/versions/1
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+    secret: projects/681624062565/secrets/NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY/versions/1
