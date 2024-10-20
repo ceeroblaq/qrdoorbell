@@ -1,0 +1,24 @@
+# Settings for Cloud Run
+runConfig:
+  minInstances: 0
+  maxInstances: 10
+  concurrency: 50
+  cpu: 1
+  memoryMiB: 512
+# Environment variables and secrets
+env:
+  - variable: NEXT_PUBLIC_OPENAI_API_KEY
+    secret: projects/860007949461/secrets/openai_key/versions/1
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: CLERK_SECRET_KEY
+    secret: projects/860007949461/secrets/CLERK_SECRET_KEY/versions/1
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+    secret: projects/860007949461/secrets/NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY/versions/1
+    availability:
+      - BUILD
+      - RUNTIME

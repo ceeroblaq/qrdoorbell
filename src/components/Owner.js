@@ -3,14 +3,17 @@
 import React, { useRef, useState } from 'react'
 import Link from 'next/link'
 import ReactLoading from 'react-loading';
+import {generateQRFor} from '../helpers/helpers'
+import { createResidence, getQRDownloadURL } from '../helpers/firebaseConfig';
 
 export default function Owner({ user }) {
   const homeownerName = user.name // This would typically come from a prop or context
   const homeRef = useRef(null)
+  const [name, setName] = useState(`${user.name}'s Residence` ?? '')
   const notificationsRef = useRef(null)
   const messagesRef = useRef(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [qrlink, setQRLink] = useState(user.qrcode ?? '')
+  const [qrlink, setQRLink] = useState(user.owner.qrcode ?? '')
   const [waiting, setWaiting] = useState(false)
   const [uploading, setUploading] = useState(false)
 
@@ -28,18 +31,19 @@ export default function Owner({ user }) {
   )
   const handleQR = async () => {
     setWaiting(true)
-    const link = await generateQRFor(menuid)
+    const id = await createResidence(name, '', user.uid)
+    const link = await generateQRFor(id)
     setQRLink(link)
     setWaiting(false)
   }
   const handleQRSave = async () => {
     setWaiting(true)
-    const url = await getQRDownloadURL(menuid)
+    const url = await getQRDownloadURL(user.owner.id)
 
     // Create a link element and trigger the download
     const link = document.createElement("a");
     link.href = url; // a URL for the blob
-    link.download = `QR Code: ${state?.title.trim()}.png`; // The name of the downloaded file
+    link.download = `DoorBell QR Code for ${user.owner.name.trim()}.png`; // The name of the downloaded file
     document.body.appendChild(link);
     link.click(); // Programmatically click the link to trigger the download
     document.body.removeChild(link); // Clean up the DOM
@@ -55,9 +59,6 @@ export default function Owner({ user }) {
           <h1 className="text-3xl font-bold text-gray-100 mb-8">Welcome back, {homeownerName}!</h1>
 
           <div>
-            <div>
-              <span>QR Code</span>
-            </div>
             <div className='flex flex-col w-full items-center justify-center gap-1'>
               {qrlink ?
 
@@ -77,18 +78,28 @@ export default function Owner({ user }) {
                   </button>
                 </div>
                 :
-                <button className={`flex justify-center min-w-fit gap-2 items-center bg-orange-200 text-black border border-red-900 rounded px-3`}
-                  onClick={() => {
-                    handleQR()
-                  }}>
-                  <span className='font-semibold text-xs py-2'>{waiting ? 'Generating..' : 'Generate QR Code'}</span>
-                  {waiting && <ReactLoading height={'32px'} width={'32px'} type="bubbles" color="black" />}
-                </button>
+                <div className='flex p-4 gap-2 flex-col border rounded'>
+                  <div className="flex gap-1 flex-col">
+                    <span htmlFor="name" className='text-xs'>Residence Name</span>
+                    <input
+                      className='py-2 px-4 rounded text-black text-sm'
+                      id="name"
+                      placeholder="Enter your residence name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <button className={`flex justify-center gap-2 items-center bg-orange-200 disabled:bg-gray-300 text-black border border-red-900 rounded px-3`}
+                  disabled={name == ''}
+                    onClick={() => {
+                      handleQR()
+                    }}>
+                    <span className='font-semibold text-xs py-2'>{waiting ? 'Generating..' : 'Generate QR Code'}</span>
+                    {waiting && <ReactLoading height={'32px'} width={'32px'} type="bubbles" color="black" />}
+                  </button>
+                </div>
               }
-            </div>
-            <div className="px-6 py-4 bg-gray-50 text-black flex justify-end space-x-2 rounded-b-lg">
-              <button>Print</button>
-              <button>Download</button>
             </div>
           </div>
         </div>

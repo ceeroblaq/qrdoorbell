@@ -1,14 +1,16 @@
 "use client"
 
+import { useRouter } from 'next/navigation'
 import React, { useState, useRef } from 'react'
 
-export default function Visitor({ user }) {
+export default function Visitor({params, user}) {
   const [isRinging, setIsRinging] = useState(false)
   const [isLeavingMessage, setIsLeavingMessage] = useState(false)
   const [name, setName] = useState(user.name ?? '')
   const [message, setMessage] = useState('')
   const [confirmationMessage, setConfirmationMessage] = useState('')
   const audioContext = useRef(null)
+  const router = useRouter();
 
   const playDoorbellSound = () => {
     if (!audioContext.current) {
