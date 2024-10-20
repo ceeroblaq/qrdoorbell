@@ -40,7 +40,7 @@ export default function Visitor({params, user}) {
 
     oscillator.start(ctx.currentTime)
     oscillator.stop(ctx.currentTime + 1.2)
-  }
+  } 
 
   const handleRingDoorbell = () => {
     setIsRinging(true)
